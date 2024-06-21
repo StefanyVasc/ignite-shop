@@ -1,7 +1,13 @@
+import { styled } from "@/styles";
+
+const Button = styled('button', {
+  backgroundColor: '$rocketseat'
+})
+
 export default function Home() {
   return (
     <div>
-      <p>first app in Next</p>
+      <Button>first app in Next</Button>
     </div>
       
   );
