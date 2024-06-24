@@ -5,7 +5,8 @@ interface ProductProps {
 }
 
 export default function Product({ foo }: ProductProps) {
-  const {query} = useRouter()
+  const { query } = useRouter()
+
   return (
     <div>
       <span>Id - {JSON.stringify(query)}</span>
