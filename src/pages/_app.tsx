@@ -2,6 +2,7 @@ import { globalStyles } from "@/styles/global";
 import type { AppProps } from "next/app";
 import { Container, Header } from "../styles/pages/app"
 import logoImg from "../assets/logo.svg"
+import Image from "next/image";
 
 /* 
 * App é carregado em todas as páginas. É algo global, por isso o
@@ -17,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Container>
       <Header>
-        <img src={logoImg.src} alt="" />
+        <Image src={logoImg} alt="" />
       </Header>
 
       <Component {...pageProps} />
