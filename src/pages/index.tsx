@@ -7,6 +7,7 @@ import { stripe } from "@/lib/stripe"
 import Stripe from "stripe"
 
 import 'keen-slider/keen-slider.min.css'
+import Link from "next/link"
 
 type HomeProps = {
   products: {
@@ -41,39 +42,56 @@ export default function Home({ products }: HomeProps) {
       
       {products.map(product => {
         return (
-          <Product key={product.id} className="keen-slider__slide">
-            <Image src={product.imageURL} width={520} height={480} alt={product.description} />
-
-            <footer>
-              <strong>{product.title}</strong>
-              <span>{product.price}</span>
-            </footer>
-          </Product>
+          /* 
+          * Link é um componente do next que faz a navegação entre páginas
+          * sem recarregar a página inteira. (SPA)
+          * 
+          * pre-fetch(pré-carregamento) de link é feito por padrão e pode ser perigoso.
+          * intersection observer é feito quando o next detecta que há um link em 
+          * tela, ele faz o pré-fetch mesmo sem ter sido clicado. Com muitos links
+          * o Next fará um pré-fetch de todos os links detectáveis.
+          */
+          <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+            <Product className="keen-slider__slide">
+              <Image 
+                src={product.imageURL} 
+                width={520} 
+                height={480} 
+                alt={product.description} 
+              />
+              <footer>
+                <strong>{product.title}</strong>
+                <span>{product.price}</span>
+              </footer>
+            </Product>
+          </Link>
         )
       })} 
     </HomeContainer>
   )
 }
 
-// funciona com o JavaScript desabilitado porque não roda no browser
-// só roda no servidor, por isso é chamado de server side.
-
-// não devolve nada até que tudo o que estiver no getServerSideProps tenha
-// sido executado. Ou seja, nunca terá um estado de loading, pois a página
-// só é renderizada quando tudo estiver pronto.
-
-// chamadas a API, conexão com banco de dados, autenticação etc. Na maioria das 
-// vezes é melhor fazer chamadas a API da maneira tradicional no cliente
-// As chamadas feitas no getServerSideProps só serão feitas em casos
-// onde o conteúdo precisa estar disponível assim que a página for 
-// carregada em tela (para indexadores, browser, crawlers, etc). 
-// Consigo ter informações do contexto da requisição como req, res
-
-// getStaticProps (SSG) - essa página não vai mudar com frequência
-// é possível haver um cache dessa página. Para isso é mais aconselhável
-// usar o getStaticProps. No ambiente de desenvolvimento o getStaticProps
-// é chamado a cada requisição, mas em produção ele é chamado uma vez e
-// o conteúdo é cacheado. Executado no momento de build da aplicação.
+/* 
+* funciona com o JavaScript desabilitado porque não roda no browser
+* só roda no servidor, por isso é chamado de server side.
+* 
+* não devolve nada até que tudo o que estiver no getServerSideProps tenha
+* sido executado. Ou seja, nunca terá um estado de loading, pois a página
+* só é renderizada quando tudo estiver pronto.
+* 
+* chamadas a API, conexão com banco de dados, autenticação etc. Na maioria das 
+* vezes é melhor fazer chamadas a API da maneira tradicional no cliente
+* As chamadas feitas no getServerSideProps só serão feitas em casos
+* onde o conteúdo precisa estar disponível assim que a página for 
+* carregada em tela (para indexadores, browser, crawlers, etc). 
+* Consigo ter informações do contexto da requisição como req, res
+* 
+* getStaticProps (SSG) - essa página não vai mudar com frequência
+* é possível haver um cache dessa página. Para isso é mais aconselhável
+* usar o getStaticProps. No ambiente de desenvolvimento o getStaticProps
+* é chamado a cada requisição, mas em produção ele é chamado uma vez e
+* o conteúdo é cacheado. Executado no momento de build da aplicação. 
+*/
 
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
