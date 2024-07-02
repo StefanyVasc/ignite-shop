@@ -8,6 +8,7 @@ import Stripe from "stripe"
 
 import 'keen-slider/keen-slider.min.css'
 import Link from "next/link"
+import Head from "next/head"
 
 type HomeProps = {
   products: {
@@ -38,36 +39,44 @@ export default function Home({ products }: HomeProps) {
   });
 
   return (
-    <HomeContainer ref={sliderRef} className="keen-slider">
+    <>
+      <Head>
+        <title>Home | Ignite Shop</title>
+      </Head>
+
+      <HomeContainer ref={sliderRef} className="keen-slider">
+        
       
-      {products.map(product => {
-        return (
-          /* 
-          * Link é um componente do next que faz a navegação entre páginas
-          * sem recarregar a página inteira. (SPA)
-          * 
-          * pre-fetch(pré-carregamento) de link é feito por padrão e pode ser perigoso.
-          * intersection observer é feito quando o next detecta que há um link em 
-          * tela, ele faz o pré-fetch mesmo sem ter sido clicado. Com muitos links
-          * o Next fará um pré-fetch de todos os links detectáveis.
-          */
-          <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
-            <Product className="keen-slider__slide">
-              <Image 
-                src={product.imageURL} 
-                width={520} 
-                height={480} 
-                alt={product.description} 
-              />
-              <footer>
-                <strong>{product.title}</strong>
-                <span>{product.price}</span>
-              </footer>
-            </Product>
-          </Link>
-        )
-      })} 
-    </HomeContainer>
+
+        {products.map(product => {
+          return (
+            /* 
+            * Link é um componente do next que faz a navegação entre páginas
+            * sem recarregar a página inteira. (SPA)
+            * 
+            * pre-fetch(pré-carregamento) de link é feito por padrão e pode ser perigoso.
+            * intersection observer é feito quando o next detecta que há um link em 
+            * tela, ele faz o pré-fetch mesmo sem ter sido clicado. Com muitos links
+            * o Next fará um pré-fetch de todos os links detectáveis.
+            */
+            <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+              <Product className="keen-slider__slide">
+                <Image 
+                  src={product.imageURL} 
+                  width={520} 
+                  height={480} 
+                  alt={product.description} 
+                />
+                <footer>
+                  <strong>{product.title}</strong>
+                  <span>{product.price}</span>
+                </footer>
+              </Product>
+            </Link>
+          )
+        })} 
+      </HomeContainer>
+    </>
   )
 }
 
@@ -102,7 +111,6 @@ export const getStaticProps: GetStaticProps = async () => {
     const price = product.default_price as Stripe.Price
 
     // unit_amount é o valor em centavos
-
     return {
       id: product.id,
       title: product.name,
